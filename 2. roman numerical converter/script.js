@@ -27,6 +27,7 @@ const dictionary = [
 
 button.addEventListener("click", () => {
     const value = Number(input.value);
+    output.classList.remove("hide");
     if(value < 4000 && value >= 1) {
         output.innerHTML = generate(value).join("");
         roman = [];
