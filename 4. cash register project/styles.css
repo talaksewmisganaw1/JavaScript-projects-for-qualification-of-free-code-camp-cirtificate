@@ -1,0 +1,63 @@
+*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    padding: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    border-radius: 20px;
+    color: white;
+    background-color: rgb(229, 10, 229);  
+    box-shadow: 0 0 40px;  
+}
+
+#title {
+    margin-bottom: 15px;
+    font-size: 26px;
+    border-bottom: 3px solid white;
+}
+
+#cash {
+    padding: 10px 40px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: 2px solid pink;
+}
+
+#purchase-btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: rgb(243, 210, 23);
+    border: 2px solid yellow;
+    border-radius: 20px;
+}
+
+#change-due {
+    background-color: rgba(235, 230, 230, 0.208);
+    margin-top: 15px;
+    padding: 10px 40px;
+}
+
+.hide {
+    display: none;
+}
+
+.displayer {
+    display: block;
+}
+
