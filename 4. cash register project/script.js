@@ -4,21 +4,22 @@ const displayer = document.getElementById("change-due");
 
 btn.addEventListener("click", purchase);
 
+displayer.classList.add("hide");
 function purchase() {
     let cash = Number(input.value);
     cash = cash * 100;
     let price = 19.5;
     price = price * 100;
-    let changeArr = [];
     let cid = [["PENNY", 0], 
     ["NICKEL", 0], 
     ["DIME", 0.2], 
-    ["QUARTER", .5], 
+    ["QUARTER", 0.5], 
     ["ONE", 0],
     ["FIVE", 0], 
     ["TEN", 0], 
     ["TWENTY", 0], 
     ["ONE HUNDRED", 0]];
+    let changeArr = [];
 
     cid.forEach(item => item[1] = item[1] * 100);
 
@@ -39,6 +40,7 @@ function purchase() {
     if(price > cash) {
         alert("Customer does not have enough money to purchase the item");
     } else if (cash === price) {
+        displayer.classList.remove("hide");
         return displayer.innerHTML = "No cahnge due - customer paid with exact cash"
     } else {
         let changeAmount = cash - price;
@@ -61,6 +63,8 @@ function purchase() {
             }
         }
 
+        displayer.classList.remove("hide");
+
         if(changeAmount > 0) {
             return displayer.innerHTML = "Status: INSUFFICIENT_FUNDS";
         }
@@ -71,6 +75,8 @@ function purchase() {
         if (totalCash === 0) {
             return displayer.innerHTML = `Status: CLOSED ${changeList}`
         }
+
+        return displayer.innerHTML = `Status: OPEN ${changeList}`
 
     }
     
