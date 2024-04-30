@@ -1,89 +1,92 @@
-const input = document.getElementById("cash");
+const cashInput = document.getElementById("cash");
 const btn = document.getElementById("purchase-btn");
-const displayer = document.getElementById("change-due");
+const changeDisplay = document.getElementById("change-due");
+const currencyUnits = {
+    "PENNY": 1, 
+    "NICKEL": 5, 
+    "DIME": 10, 
+    "QUARTER": 25, 
+    "ONE": 100,
+    "FIVE": 500, 
+    "TEN": 1000, 
+    "TWENTY": 2000, 
+    "ONE HUNDRED": 10000
+}
 
-btn.addEventListener("click", purchase);
+let price = 1.87;
+let cid = [
+  ["PENNY", 1.01],
+  ["NICKEL", 2.05],
+  ["DIME", 3.1],
+  ["QUARTER", 4.25],
+  ["ONE", 90],
+  ["FIVE", 55],
+  ["TEN", 20],
+  ["TWENTY", 60],
+  ["ONE HUNDRED", 100]
+];
 
-displayer.classList.add("hide");
+//make the changeDisplay item hidden when having no value
+changeDisplay.classList.add("hide");
+
+//**************EVENT LISTENER*************//
+btn.addEventListener("click", purchase)
+
+//**************FUNCTIONS*************//
 function purchase() {
-    let cash = Number(input.value);
-    cash = cash * 100;
-    let price = 19.5;
-    price = price * 100;
-    let cid = [["PENNY", 0], 
-    ["NICKEL", 0], 
-    ["DIME", 0.2], 
-    ["QUARTER", 0.5], 
-    ["ONE", 0],
-    ["FIVE", 0], 
-    ["TEN", 0], 
-    ["TWENTY", 0], 
-    ["ONE HUNDRED", 0]];
+    const cash = Number(cashInput.value);
+    changeDisplay.innerHTML = checkCashRegister(price, cash, cid);
+}
+
+function checkCashRegister(price, cash, cid) {
+    let change = cash * 100 - price * 100;
+    let cidMultiplied = cid.map(item => {return [item[0], Math.round(item[1] * 100)]});
+    let totalCash = cidMultiplied.reduce((sum, item) => sum + item[1], 0);
     let changeArr = [];
+    // let status = '';
 
-    cid.forEach(item => item[1] = item[1] * 100);
-
-    let totalCash = cid.reduce((sum, item) => sum + item[1], 0).toFixed(2);
-
-    const currencyUnits = {
-        "PENNY": 1, 
-        "NICKEL": 5, 
-        "DIME": 10, 
-        "QUARTER": 25, 
-        "ONE": 100,
-        "FIVE": 500, 
-        "TEN": 1000, 
-        "TWENTY": 2000, 
-        "ONE HUNDRED": 10000
-    }
-
-    if(price > cash) {
-        alert("Customer does not have enough money to purchase the item");
-    } else if (cash === price) {
-        displayer.classList.remove("hide");
-        return displayer.innerHTML = "No cahnge due - customer paid with exact cash"
+    if (cash < price) {
+        window.alert("Customer does not have enough money to purchase the item")
+    } else if(cash === price) {
+        changeDisplay.classList.remove("hide");
+        return `No change due - customer paid with exact cash`
+    } else if(totalCash < change) {
+        changeDisplay.classList.remove("hide");
+        return `Status: INSUFFICIENT_FUNDS`;
     } else {
-        let changeAmount = cash - price;
-        for (let i = cid.length - 1; i >= 0; i--){
-            let cidName = cid[i][0];
-            let currencyUnitValue = currencyUnits[cidName];
-            let currencyAmount = cid[i][1]/currencyUnitValue; 
+        for (let i = cidMultiplied.length - 1; i >= 0; i--) {
+            let element = cidMultiplied[i];
+            let cidName = element[0];
+            let cidValue = element[1];
+            let currencyUnit = currencyUnits[cidName];
+            let currencyUnitAmount = cidValue / currencyUnit;
             let amountToGive = 0;
 
-            while(changeAmount >= currencyUnitValue && currencyAmount > 0) {
-                changeAmount -= currencyUnitValue;
-                cid[i][1] -= currencyUnitValue;
+            while(change >= currencyUnit && currencyUnitAmount > 0) {
+                change -= currencyUnit;
+                // cidMultiplied[i][1] -= currencyUnit;
+                totalCash -= currencyUnit;
                 amountToGive++;
-                currencyAmount--;
+                currencyUnitAmount--;
             }
 
-            if (amountToGive > 0) {
-                let changeValue = amountToGive * currencyUnitValue;
-                changeArr.push([`${cidName}: $${changeValue/100}`]);
+            if(amountToGive !== 0) {
+                changeArr.push([`${cidName}: $${currencyUnit * amountToGive / 100}`])
             }
         }
 
-        displayer.classList.remove("hide");
-
-        if(changeAmount > 0) {
-            return displayer.innerHTML = "Status: INSUFFICIENT_FUNDS";
+        if (change > 0) {
+            changeDisplay.classList.remove("hide");
+            return `Status: INSUFFICIENT_FUNDS`;
+        } 
+        // totalCash = cidMultiplied.reduce((sum, item) => sum + item[1], 0);
+        let changeList = changeArr.join(" ")
+        if (totalCash == 0) {
+            changeDisplay.classList.remove("hide");
+            return `Status: CLOSED ${changeList}`;
         }
 
-        totalCash = cid.reduce((sum, item) => sum + item[1], 0);
-
-        let changeList = changeArr.join(" ");
-        if (totalCash === 0) {
-            return displayer.innerHTML = `Status: CLOSED ${changeList}`
-        }
-
-        return displayer.innerHTML = `Status: OPEN ${changeList}`
-
+        changeDisplay.classList.remove("hide");
+        return `Status: OPEN ${changeList}`;
     }
-    
-    
-    
-
-
-
-
 }
